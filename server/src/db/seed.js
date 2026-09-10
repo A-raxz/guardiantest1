@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { config } from '../config.js';
 import { getDb } from './index.js';
 import { hashPassword, randomId } from '../lib/crypto.js';
@@ -278,7 +280,12 @@ export async function seedDemoData({ quiet = false } = {}) {
   log(quiet, `  Zones         : ${zones.map((z) => z.code).join(', ')}`);
 }
 
-const isDirectRun = process.argv[1] && import.meta.url.endsWith(process.argv[1].split('/').pop());
+// True only when this file is the entry point (`npm run seed`), not when it is
+// imported by the server. Compared as resolved paths so it holds on Windows,
+// where argv[1] uses backslashes and import.meta.url does not.
+const isDirectRun =
+  Boolean(process.argv[1]) && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
 if (isDirectRun) {
   await seedDemoData();
 }
