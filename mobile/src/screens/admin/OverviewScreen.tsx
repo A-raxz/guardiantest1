@@ -1,7 +1,7 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { createZone, fetchOverview, fetchZones } from '../../api/endpoints';
 import {
   AppButton,
@@ -17,6 +17,7 @@ import {
   SectionHeader,
   StatTile,
 } from '../../components';
+import { showDialog } from '../../components/dialog';
 import type { RootStackParamList } from '../../navigation/types';
 import { useAsync } from '../../state/useAsync';
 import { colors, percentColor, spacing, typography } from '../../theme';
@@ -42,7 +43,7 @@ export function OverviewScreen() {
 
   const addZone = async () => {
     if (!zoneName.trim() || !zoneCode.trim()) {
-      Alert.alert('Missing details', 'A zone needs a name and a short code.');
+      showDialog('Missing details', 'A zone needs a name and a short code.');
       return;
     }
     setBusy(true);
@@ -54,7 +55,7 @@ export function OverviewScreen() {
       void overview.reload({ silent: true });
       void zones.reload({ silent: true });
     } catch (e) {
-      Alert.alert('Could not create the zone', e instanceof Error ? e.message : 'Please try again.');
+      showDialog('Could not create the zone', e instanceof Error ? e.message : 'Please try again.');
     } finally {
       setBusy(false);
     }

@@ -1,10 +1,11 @@
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { createUser, fetchUsers, fetchZones } from '../../api/endpoints';
 import type { Role } from '../../api/types';
 import { AppButton, Card, Field, Row, Screen, SectionHeader } from '../../components';
+import { showDialog } from '../../components/dialog';
 import type { RootStackParamList } from '../../navigation/types';
 import { useAuth } from '../../state/AuthContext';
 import { useAsync } from '../../state/useAsync';
@@ -43,11 +44,11 @@ export function CreateUserScreen() {
 
   const submit = async () => {
     if (!name.trim() || !email.trim()) {
-      Alert.alert('Missing details', 'A name and a work email are both required.');
+      showDialog('Missing details', 'A name and a work email are both required.');
       return;
     }
     if (isMaster && role !== 'MASTER_ADMIN' && !zoneId) {
-      Alert.alert('Pick a zone', 'Everyone except the Master Admin belongs to a zone.');
+      showDialog('Pick a zone', 'Everyone except the Master Admin belongs to a zone.');
       return;
     }
     setBusy(true);
@@ -60,14 +61,14 @@ export function CreateUserScreen() {
         managerId: role === 'SALES_REP' ? managerId : null,
         employeeCode: employeeCode.trim() || null,
       });
-      Alert.alert(
+      showDialog(
         'Login created',
         `${result.user.name}\n${result.user.email}\n\nTemporary password:\n${result.temporaryPassword}\n\n` +
           'Share this directly. They will be asked to set their own password on first sign-in.',
         [{ text: 'Done', onPress: () => navigation.goBack() }],
       );
     } catch (e) {
-      Alert.alert('Could not create the account', e instanceof Error ? e.message : 'Please try again.');
+      showDialog('Could not create the account', e instanceof Error ? e.message : 'Please try again.');
     } finally {
       setBusy(false);
     }

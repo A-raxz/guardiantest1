@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { fetchRewards, redeemReward } from '../../api/endpoints';
 import type { Reward } from '../../api/types';
 import { AppButton, Card, ErrorView, LoadingView, Pill, ProgressBar, Row, Screen, SectionHeader } from '../../components';
+import { showDialog } from '../../components/dialog';
 import { useAuth } from '../../state/AuthContext';
 import { useAsync } from '../../state/useAsync';
 import { colors, radius, spacing, typography } from '../../theme';
@@ -33,9 +34,9 @@ export function RewardsScreen() {
     try {
       const result = await redeemReward(reward.id);
       await Promise.all([reload({ silent: true }), refreshUser()]);
-      Alert.alert(`${result.reward.icon}  ${result.reward.name}`, 'Redeemed. Your HR BP can see it on your record.');
+      showDialog(`${result.reward.icon}  ${result.reward.name}`, 'Redeemed. Your HR BP can see it on your record.');
     } catch (e) {
-      Alert.alert('Could not redeem', e instanceof Error ? e.message : 'Please try again.');
+      showDialog('Could not redeem', e instanceof Error ? e.message : 'Please try again.');
     } finally {
       setBusyId(null);
     }

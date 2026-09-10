@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { fetchCertificates, fetchLeaderboard, fetchSummary, fetchXp } from '../../api/endpoints';
 import {
@@ -17,6 +17,7 @@ import {
   StatTile,
   formatDate,
 } from '../../components';
+import { showDialog } from '../../components/dialog';
 import { useAuth } from '../../state/AuthContext';
 import { useAsync } from '../../state/useAsync';
 import { colors, radius, roleColor, spacing, typography } from '../../theme';
@@ -42,7 +43,7 @@ export function ProfileScreen() {
   };
 
   const confirmSignOut = () =>
-    Alert.alert('Sign out?', 'You will need your password to get back in.', [
+    showDialog('Sign out?', 'You will need your password to get back in.', [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Sign out', style: 'destructive', onPress: () => void signOut() },
     ]);

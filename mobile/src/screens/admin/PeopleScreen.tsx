@@ -1,7 +1,7 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { fetchUsers, resetUserPassword, updateUser } from '../../api/endpoints';
 import type { Role, User } from '../../api/types';
 import {
@@ -18,6 +18,7 @@ import {
   SectionHeader,
   formatDate,
 } from '../../components';
+import { showDialog } from '../../components/dialog';
 import type { RootStackParamList } from '../../navigation/types';
 import { useAuth } from '../../state/AuthContext';
 import { useAsync } from '../../state/useAsync';
@@ -55,7 +56,7 @@ export function PeopleScreen() {
   const isMaster = user?.role === 'MASTER_ADMIN';
 
   const reissue = (target: User) =>
-    Alert.alert(
+    showDialog(
       'Issue a new password?',
       `${target.name} will have to set their own password the next time they sign in.`,
       [
@@ -66,9 +67,9 @@ export function PeopleScreen() {
             try {
               const result = await resetUserPassword(target.id);
               void reload({ silent: true });
-              Alert.alert('New temporary password', `${target.name}: ${result.temporaryPassword}\n\nShare it directly.`);
+              showDialog('New temporary password', `${target.name}: ${result.temporaryPassword}\n\nShare it directly.`);
             } catch (e) {
-              Alert.alert('Could not reset', e instanceof Error ? e.message : 'Please try again.');
+              showDialog('Could not reset', e instanceof Error ? e.message : 'Please try again.');
             }
           },
         },
@@ -76,7 +77,7 @@ export function PeopleScreen() {
     );
 
   const toggleActive = (target: User) =>
-    Alert.alert(
+    showDialog(
       target.isActive ? 'Deactivate account?' : 'Reactivate account?',
       target.isActive ? `${target.name} will not be able to sign in.` : `${target.name} can sign in again.`,
       [
@@ -89,7 +90,7 @@ export function PeopleScreen() {
               await updateUser(target.id, { isActive: !target.isActive });
               void reload({ silent: true });
             } catch (e) {
-              Alert.alert('Could not update', e instanceof Error ? e.message : 'Please try again.');
+              showDialog('Could not update', e instanceof Error ? e.message : 'Please try again.');
             }
           },
         },

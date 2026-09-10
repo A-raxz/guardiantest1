@@ -1,7 +1,7 @@
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { browseDrive, createCourseFromDrive, resolveDrive } from '../../api/endpoints';
 import type { DriveItem } from '../../api/types';
 import {
@@ -16,6 +16,7 @@ import {
   SectionHeader,
   formatDuration,
 } from '../../components';
+import { showDialog } from '../../components/dialog';
 import type { RootStackParamList } from '../../navigation/types';
 import { useAsync } from '../../state/useAsync';
 import { colors, radius, spacing, typography } from '../../theme';
@@ -43,7 +44,7 @@ export function DriveBrowserScreen() {
       const resolved = await resolveDrive(item.id);
       setPreview({ items: resolved.items, videoCount: resolved.videoCount });
     } catch (e) {
-      Alert.alert('Cannot use that item', e instanceof Error ? e.message : 'Try another file or folder.');
+      showDialog('Cannot use that item', e instanceof Error ? e.message : 'Try another file or folder.');
       setSelected(null);
     }
   };
@@ -55,7 +56,7 @@ export function DriveBrowserScreen() {
       const created = await createCourseFromDrive({ driveId: selected.id });
       navigation.replace('CourseSetup', { courseId: created.course.id });
     } catch (e) {
-      Alert.alert('Could not create the course', e instanceof Error ? e.message : 'Please try again.');
+      showDialog('Could not create the course', e instanceof Error ? e.message : 'Please try again.');
     } finally {
       setBusy(false);
     }

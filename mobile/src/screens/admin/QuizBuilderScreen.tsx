@@ -1,10 +1,11 @@
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { fetchLessonQuiz, saveLessonQuiz } from '../../api/endpoints';
 import type { QuizBuilderQuestion } from '../../api/types';
 import { AppButton, Card, ErrorView, Field, LoadingView, Row, Screen, SectionHeader } from '../../components';
+import { showDialog } from '../../components/dialog';
 import type { RootStackParamList } from '../../navigation/types';
 import { colors, radius, spacing, typography } from '../../theme';
 
@@ -86,12 +87,12 @@ export function QuizBuilderScreen() {
       .filter((question) => question.prompt && question.options.length >= 2);
 
     if (!cleaned.length) {
-      Alert.alert('Nothing to save', 'Add at least one question with two answer options.');
+      showDialog('Nothing to save', 'Add at least one question with two answer options.');
       return;
     }
     const invalid = cleaned.find((question) => question.correctIndex >= question.options.length);
     if (invalid) {
-      Alert.alert('Check the correct answer', `"${invalid.prompt}" points at an option that is now empty.`);
+      showDialog('Check the correct answer', `"${invalid.prompt}" points at an option that is now empty.`);
       return;
     }
 
@@ -104,7 +105,7 @@ export function QuizBuilderScreen() {
       });
       navigation.goBack();
     } catch (e) {
-      Alert.alert('Could not save', e instanceof Error ? e.message : 'Please try again.');
+      showDialog('Could not save', e instanceof Error ? e.message : 'Please try again.');
     } finally {
       setSaving(false);
     }

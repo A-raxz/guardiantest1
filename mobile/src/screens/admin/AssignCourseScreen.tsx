@@ -1,9 +1,10 @@
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { assignCourse, fetchGroups, fetchUsers } from '../../api/endpoints';
 import { AppButton, Card, EmptyState, ErrorView, LoadingView, Pill, Row, Screen, SectionHeader } from '../../components';
+import { showDialog } from '../../components/dialog';
 import type { RootStackParamList } from '../../navigation/types';
 import { useAsync } from '../../state/useAsync';
 import { colors, radius, spacing, typography } from '../../theme';
@@ -35,7 +36,7 @@ export function AssignCourseScreen() {
 
   const assign = async () => {
     if (!selectedUsers.size && !selectedGroups.size) {
-      Alert.alert('Nobody selected', 'Pick at least one person or group.');
+      showDialog('Nobody selected', 'Pick at least one person or group.');
       return;
     }
     setBusy(true);
@@ -48,7 +49,7 @@ export function AssignCourseScreen() {
       const warning = result.lessonsWithoutQuestions.length
         ? `\n\nStill to write: ${result.lessonsWithoutQuestions.join(', ')}.`
         : '';
-      Alert.alert(
+      showDialog(
         'Assigned',
         `${result.assignedCount} ${result.assignedCount === 1 ? 'person' : 'people'} now have this course.` +
           (result.skipped.length ? ` ${result.skipped.length} skipped.` : '') +
@@ -56,7 +57,7 @@ export function AssignCourseScreen() {
         [{ text: 'Done', onPress: () => navigation.goBack() }],
       );
     } catch (e) {
-      Alert.alert('Could not assign', e instanceof Error ? e.message : 'Please try again.');
+      showDialog('Could not assign', e instanceof Error ? e.message : 'Please try again.');
     } finally {
       setBusy(false);
     }
