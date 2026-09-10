@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "Guardians Learning",
+    "slug": "guardians-lms",
+    "scheme": "guardianslms",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "primaryColor": "#1B4DFF",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0B1220"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.guardians.lms",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSAllowsArbitraryLoads": false,
+        "UIBackgroundModes": ["audio"]
+      }
+    },
+    "android": {
+      "package": "com.guardians.lms",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0B1220",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["INTERNET"]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": ["expo-video", "expo-secure-store"],
+    "extra": {
+      "eas": {
+        "projectId": "00000000-0000-0000-0000-000000000000"
+      }
+    }
+  }
+}
